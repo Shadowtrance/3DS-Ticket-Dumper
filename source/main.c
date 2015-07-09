@@ -23,10 +23,9 @@
 #define BACK_WHITE		"\x1b[47m"
 #define BACK_RESET		"\x1b[49m"
 
-static uint16_t pathData[50];
-
 static FS_archive nandArchive = {
-	.id = 0x567890AB,
+	//.id = 0x567890AB, // NAND CTR FS
+	.id = ARCH_NAND_RO,
 	.lowPath = {
 		.type = PATH_EMPTY,
 		.size = 1,
@@ -34,31 +33,62 @@ static FS_archive nandArchive = {
 	}
 };
 
+static const wchar_t *nandPathString = L"/";
+
 static FS_path nandPath = {
+	.data = 0,
 	.type = PATH_WCHAR,
-	.size = 30,
-	.data = (const u8*)pathData
+	.size = 4
 };
 
 void dumpTicket(void){
 	Result res = 0;
-	Handle nandFile;
-	FILE *sdFile;
-	u8* buffer;
-	u32 read = 0;
-	u64 offset = 0;
+	Handle nandDir;
+	u32 entryCount;
+	FS_dirent dirent;
 	
 	printf("Opening NAND...\n");
 	res = FSUSER_OpenArchive(NULL, &nandArchive);
 	if(res != 0){
-		printf("%sError opening NAND!%s\n", TEXT_RED, TEXT_RESET);
+		printf("%sError opening NAND!\n%.8lX%s\n", TEXT_RED, res, TEXT_RESET);
+		return;
+	}
+	
+	printf("Opening /...\n");
+	nandPath.data = (u8 *)nandPathString;
+	res = FSUSER_OpenDirectory(NULL, &nandDir, nandArchive, nandPath);
+	if(res != 0){
+		printf("%sError opening /!\n%.8lX%s\n", TEXT_RED, res, TEXT_RESET);
+		return;
+	}
+	
+	printf("Reading...\n");
+	for(;;){
+		res = FSDIR_Read(nandDir, &entryCount, 1, &dirent);
+		if(res != 0){
+			printf("%sError reading dir!\n%.8lX%s\n", TEXT_RED, res, TEXT_RESET);
+			return;
+		}
+		
+		printf("%lu\n", entryCount);
+		if(entryCount == 0){
+			break;
+		}
+		
+		printf("%lu%ls.%4s\n", &dirent, dirent.name, dirent.shortExt);
+	}
+	
+	printf("Closing /...\n");
+	res = FSDIR_Close(nandDir);
+	if(res != 0){
+		printf("%sError closing /!\n%.8lX%s\n", TEXT_RED, res, TEXT_RESET);
 		return;
 	}
 	
 	printf("Closing NAND...\n");
 	res = FSUSER_CloseArchive(NULL, &nandArchive);
 	if(res != 0){
-		printf("%sError closing NAND!%s\n", TEXT_RED, TEXT_RESET);
+		printf("%sError closing NAND!\n%.8lX%s\n", TEXT_RED, res, TEXT_RESET);
 		return;
 	}
 }

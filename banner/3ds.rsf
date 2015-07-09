@@ -56,14 +56,14 @@ AccessControlInfo:
    # - CategoryHardwareCheck
    - CategoryFileSystemTool
    - Debug
-   # - TwlCardBackup
-   # - TwlNandData
+   - TwlCardBackup
+   - TwlNandData
    # - Boss
    - DirectSdmc
    # - Core
-   # - CtrNandRo
-   # - CtrNandRw
-   # - CtrNandRoWrite
+   - CtrNandRo
+   - CtrNandRw
+   - CtrNandRoWrite
    # - CategorySystemSettings
    # - CardBoard
    # - ExportImportIvs
@@ -74,11 +74,11 @@ AccessControlInfo:
    # - Shell
    # - CategoryHomeMenu
   IoAccessControl:
-   # - FsMountNand
-   # - FsMountNandRoWrite
-   # - FsMountTwln
-   # - FsMountWnand
-   # - FsMountCardSpi
+   - FsMountNand
+   - FsMountNandRoWrite
+   - FsMountTwln
+   - FsMountWnand
+   - FsMountCardSpi
    # - UseSdif3
    # - CreateSeed
    # - UseCardSpi
@@ -196,7 +196,6 @@ AccessControlInfo:
    - am:u
    - cfg:nor
    - csnd:SND
-   - ir:rst
 
 SystemControlInfo:
   SaveDataSize: 0KB # It doesn't use any save data.
