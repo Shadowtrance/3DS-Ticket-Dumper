@@ -154,7 +154,7 @@ $(BUILD): banner/banner.bnr banner/icon.icn
 	@cp "$(TARGET).3ds" "$(TARGET)/"
 	@zip -q -r "$(TARGET).zip" "$(TARGET)/"
 	@rm -r "$(TARGET)"
-	@echo build ... $(TARGET).zip
+	@echo built ... $(TARGET).zip
 
 #---------------------------------------------------------------------------------
 clean:
